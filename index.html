@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <script src="https://unpkg.com/vue@2.5.13/dist/vue.min.js"></script>
+  </head>
+
+  <div id="app" >
+    <p>{{ message }}</p>
+
+    <p v-show="!isValid"> 価格を入力してください </p>
+    <input v-model="price" v-bind:style="{'border': (isValid ? '' : '1px solid red')}">
+    <p>{{ priceWithTax }}</p>
+
+    <li v-for="item in items">
+      {{ item.name }} は {{ item.price }}円
+    </li>
+
+    <user-login></user-login>
+  </div>
+
+  <script>
+    var auth = {
+      login: function(id, pass){
+        window.alert("login id:" + id + "\n" + "password:" + pass);
+      }
+    }
+
+    var loginTemplate = `
+      <div>
+        <input type="text" placeholder="ログインID" v-model="userid">
+        <input type="password" placeholder="パスワード" v-model="password">
+        <button v-on:click="login">ログイン</button>
+      </div>
+    `
+    Vue.component('user-login', {
+      template: loginTemplate,
+      data: function(){
+        return {
+          userid: '',
+          password: ''
+        }
+      },
+      methods: {
+        login: function(){
+          auth.login(this.userid, this.password);
+        }
+      }
+    });
+
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        message: 'hello world!',
+        price: 0,
+        items: [
+          {
+            name: 'みかん',
+            price: 100
+          },
+          {
+            name: 'もも',
+            price: 300
+          },
+          {
+            name: 'いちじく',
+            price: 500
+          },
+          {
+            name: 'メロン',
+            price: 1000
+          }
+        ]
+      },
+      computed: {
+        priceWithTax: function () {
+          return this.price * 1.08;
+        },
+        isValid: function () {
+          return this.price.length > 0;
+        }
+      },
+      component: 'user-login'
+    });
+
+    window.vm = vm;
+  </script>
+
+</html>
